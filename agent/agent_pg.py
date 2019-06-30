@@ -204,7 +204,7 @@ class AgentPG(Agent):
                     print("Env crash, making new env")
                     print('#############################################################################################################################################')
                     time.sleep(60)
-                    self.envs = MultiEnv(resize=(250,150))
-                    self.envs.configure(remotes=1)
+                    self.env = MultiEnv(resize=(250,150))
+                    self.env.configure(remotes=1)
                     self.env = env
                     time.sleep(60)
