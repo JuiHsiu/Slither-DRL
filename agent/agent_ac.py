@@ -57,7 +57,7 @@ class Net(nn.Module):
     def forward(self, x):
         x = self.conv_blocks(x)
         x = x.view(x.shape[0], -1)
-
+        
         action_prob = self.action(x)
         value = self.value(x)  
 
@@ -212,7 +212,6 @@ class AgentAC(Agent):
                     print("Env crash, making new env")
                     print('#############################################################################################################################################')
                     time.sleep(60)
-                    env = MultiEnv()
-                    env.configure(fps=5.0, remotes=1, start_timeout=15 * 60, vnc_driver='go', vnc_kwargs={'subsample_level': 0, 'encoding': 'tight', 'compress_level': 2, 'fine_quality_level': 100})
-                    self.env = env
+                    self.env = MultiEnv(resize=(250,150))
+                    self.env.configure(remotes=1)
                     time.sleep(60)

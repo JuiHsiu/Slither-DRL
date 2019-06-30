@@ -46,7 +46,7 @@ class AgentA2C:
         #######################    Please check a2c/actor_critic.py
         
         self.display_freq = 1000
-        self.save_freq = 100000
+        self.save_freq = 1
         self.save_dir = './ckpts/'
 
         torch.manual_seed(self.seed)
@@ -71,7 +71,7 @@ class AgentA2C:
                 eps=1e-5)
         
         if args.test_a2c:
-            self.load_model('./ckpts/model_5.pt')
+            self.load_model('./ckpts/model_1239.pt')
 
         self.hidden = None
         self.init_game_setting()
