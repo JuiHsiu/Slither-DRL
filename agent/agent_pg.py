@@ -6,8 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from agent.agent import Agent
-from utils.util import resize
-from utils.env import createEnv, actionTransform
+from utils.env import MultiEnv, multiActionTransform
 from universe.wrappers import Unvectorize
 
 import pdb
@@ -29,22 +28,22 @@ class PolicyNet(nn.Module):
             block = [nn.Conv2d(in_filters, out_filters, kernel, stride, 1), 
                      nn.LeakyReLU(0.2, inplace=True)]
             
-            if mp:
-                block.append(nn.MaxPool2d(kernel, stride))
-            
             if bn:
                 block.append(nn.BatchNorm2d(out_filters, 0.8))
+                
+            if mp:
+                block.append(nn.MaxPool2d(kernel, stride))
                 
             return block
 
         self.conv_blocks = nn.Sequential(
-            *conv_block(state_dim, 32, 8, 4, mp=False),
+            *conv_block(state_dim, 32, 8, 4),
             *conv_block(32, 64, 4, 2),
             *conv_block(64, 64, 3, 1, mp=False),
         )
 
-        self.fc1 = nn.Linear(64 * 8 * 14, 512)
-        self.fc2 = nn.Linear(512, action_num)
+        self.fc1 = nn.Linear(64 * 1 * 2, 64)
+        self.fc2 = nn.Linear(64, action_num)
 
     def forward(self, x):
         x = F.relu(self.conv_blocks(x))
@@ -99,7 +98,7 @@ class AgentPG(Agent):
         # Use your model to output distribution over actions and sample from it.
         
         with torch.no_grad():
-            state = torch.from_numpy(state).float().permute(2,0,1).unsqueeze(0)
+            state = torch.from_numpy(state).float().permute(0,3,1,2)
             state = state.to(device)
 
         if test:
@@ -107,7 +106,7 @@ class AgentPG(Agent):
                 action_probs = self.model(state)
                 action = torch.distributions.Categorical(action_probs).sample()
                 
-                return action.item()
+                return action.cpu().numpy()
 
         else:
             action_probs = self.model(state)
@@ -117,7 +116,7 @@ class AgentPG(Agent):
             action = distribution.sample()
             self.saved_log_probs.append(distribution.log_prob(action))
 
-            return action.item()
+            return action.cpu().numpy()
 
     def update(self):
         # discount your saved reward
@@ -126,7 +125,7 @@ class AgentPG(Agent):
         for r in self.rewards[::-1]:
             R = r + self.gamma * R
             discounted_rewards.append(R)
-        discounted_rewards = torch.tensor(discounted_rewards[::-1], device=device)
+        discounted_rewards = torch.tensor(discounted_rewards[::-1], device=device).float()
 
         # normalize reward
         discounted_rewards = (discounted_rewards - discounted_rewards.mean()) / (discounted_rewards.std() + self.eps)
@@ -154,7 +153,6 @@ class AgentPG(Agent):
 
             try:
                 state = self.env.reset()
-                state = resize(state)
                 self.init_game_setting()
                 done = False
                 while(not done):
@@ -162,9 +160,8 @@ class AgentPG(Agent):
                         self.env.render()
 
                     action = self.make_action(state)
-                    transformed_action = actionTransform(action)
+                    transformed_action = multiActionTransform(action)
                     state, reward, done, _ = self.env.step(transformed_action)
-                    state = resize(state)
 
                     self.saved_actions.append(action)
                     self.rewards.append(reward)
@@ -207,7 +204,7 @@ class AgentPG(Agent):
                     print("Env crash, making new env")
                     print('#############################################################################################################################################')
                     time.sleep(60)
-                    env = createEnv()
-                    env.configure(fps=5.0, remotes=1, start_timeout=15 * 60, vnc_driver='go', vnc_kwargs={'subsample_level': 0, 'encoding': 'tight', 'compress_level': 2, 'fine_quality_level': 100})
+                    self.envs = MultiEnv(resize=(250,150))
+                    self.envs.configure(remotes=1)
                     self.env = env
                     time.sleep(60)
