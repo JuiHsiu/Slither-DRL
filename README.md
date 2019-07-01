@@ -53,7 +53,7 @@ git clone https://github.com/JuiHsiu/Slither-DRL.git
 cd Slither-DRL
 ```
 
-## How to run :
+## How to Run :
 - training the agent
 ```
 python main.py --train_[pg|dqn|ac|a2c] 
@@ -79,20 +79,19 @@ python main.py --train_[pg|dqn|ac|a2c] --do_render
 python main.py --test_[pg|dqn|ac|a2c] --video_dir [path_to_save_video]
 ```
 
-## Advanced arguments
+## Advanced Arguments :
 1. Number of Environment
 
-	You can create more than one environment at the same time:
+	You can create more than one environment at the same time. However, you need to modify the codes to perform batch learning.
 ```
-	python main.py --train_[pg|dqn|ac|a2c] --remotes [#_of_env]
+python main.py --train_[pg|dqn|ac|a2c] --remotes [#_of_env]
 ```
-	However, you need to modify the codes to perform batch learning.
 
 2. Action Space
 
 	We make 12 different positions of the mouse as the action space of our agent. If you want the agent to have the ability to accumulate, set the action_space = 24.
 ```
-	python main.py --train_[pg|dqn|ac|a2c] --action_space [12|24]
+python main.py --train_[pg|dqn|ac|a2c] --action_space [12|24]
 ```
 
 ## Demo :
