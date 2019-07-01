@@ -1,4 +1,3 @@
-import pickle
 import random
 import math
 import numpy as np
@@ -355,7 +354,6 @@ class AgentDQN(Agent):
             episodes_done_num += 1
             if self.steps > self.num_timesteps:
                 break
-        #self.save(self.model_name)
         self.save_log(avg_reward_log)
 
     def save_log(self, log):

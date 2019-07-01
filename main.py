@@ -28,12 +28,11 @@ def parse():
     parser.add_argument('--test_dqn', action='store_true', help='whether test DQN')
     parser.add_argument('--test_ac', action='store_true', help='whether test Actor-Critic')
     parser.add_argument('--test_a2c', action='store_true', help='whether test A2C')
-    parser.add_argument('--video_dir', default=None, help='output video directory')
+    parser.add_argument('--video_dir', default='records', help='output video directory')
     parser.add_argument('--do_render', action='store_true', help='whether render environment')
     parser.add_argument('--remotes', type=int, default=1, help='Number of envs.')
     parser.add_argument('--channels', default=3, help='observation input channels')
     parser.add_argument('--action_space', type=int, default=24, help='snake moving action space')
-    parser.add_argument('--model_name', type=str, default='dueling-ddqn', help='dqn model name')
 
     try:
         from argument import add_arguments
@@ -71,25 +70,25 @@ def run(args):
 
     if args.test_pg:
         from agent.agent_pg import AgentPG
-        env = gym.wrappers.Monitor(env, 'records', video_callable=lambda x: True, resume=True)
+        env = gym.wrappers.Monitor(env, args.video_dir, video_callable=lambda x: True, resume=True)
         agent = AgentPG(env, args)
         test(agent, env, args, total_episodes=1)
 
     if args.test_dqn:
         from agent.agent_dqn import AgentDQN
-        env = gym.wrappers.Monitor(env, 'records', video_callable=lambda x: True, resume=True)
+        env = gym.wrappers.Monitor(env, args.video_dir, video_callable=lambda x: True, resume=True)
         agent = AgentDQN(env, args)
         test(agent, env, args, total_episodes=1)
 
     if args.test_ac:
         from agent.agent_ac import AgentAC
-        env = gym.wrappers.Monitor(env, 'records', video_callable=lambda x: True, resume=True)
+        env = gym.wrappers.Monitor(env, args.video_dir, video_callable=lambda x: True, resume=True)
         agent = AgentAC(env, args)
         test(agent, env, args, total_episodes=1)
         
     if args.test_a2c:
         from agent.agent_a2c import AgentA2C
-        env = gym.wrappers.Monitor(env, 'records', video_callable=lambda x: True, resume=True)
+        env = gym.wrappers.Monitor(env, args.video_dir, video_callable=lambda x: True, resume=True)
         agent = AgentA2C(env, args)
         test(agent, env, args, total_episodes=1)
 
