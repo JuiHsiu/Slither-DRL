@@ -9,7 +9,7 @@ from torch.distributions import Categorical
 from collections import namedtuple
 from utils.env import multiActionTransform
 
-from agent_dir.agent import Agent
+from agent.agent import Agent
 
 use_cuda = torch.cuda.is_available()
 random.seed(9487)
@@ -127,9 +127,10 @@ class ReplayBuffer(object):
 class AgentDQN(Agent):
     def __init__(self, env, args):
         self.env = env
+        self.args = args
         self.input_channels = 3
         self.num_actions = 12
-        # TODO:
+        
         # Initialize your replay buffer
         self.replay_buffer = ReplayBuffer(10000)
         self.prioritized = args.prioritized_dqn
@@ -304,7 +305,8 @@ class AgentDQN(Agent):
                     self.replay_buffer.penalty(30, -10)
                 
                 # render
-                self.env.render()
+                if self.args.do_render:
+                    self.env.render()
 
                 # process new state
                 next_state = torch.from_numpy(next_state).float().permute(0,3,1,2)

@@ -32,7 +32,7 @@ def parse():
     parser.add_argument('--do_render', action='store_true', help='whether render environment')
     parser.add_argument('--remotes', type=int, default=1, help='Number of envs.')
     parser.add_argument('--channels', default=3, help='observation input channels')
-    parser.add_argument('--action_space', type=int, default=24, help='snake moving action space')
+    parser.add_argument('--action_space', type=int, default=12, help='snake moving action space')
 
     try:
         from argument import add_arguments

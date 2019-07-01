@@ -8,7 +8,6 @@ from torch.nn.utils import clip_grad_norm_
 
 from agent.agent import Agent
 from utils.env import MultiEnv, multiActionTransform
-from art import tprint
 import pdb
 
 # random seed
@@ -155,7 +154,6 @@ class AgentAC(Agent):
         self.optimizer.step()
         
     def train(self):
-        tprint('START')
         max_reward = 0.0
         avg_reward = None # moving average of reward
         continual_crash = 0

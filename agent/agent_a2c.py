@@ -230,6 +230,8 @@ class AgentA2C:
                
 
     def save_model(self, filename, max_reward):
+        if not os.path.isdir(self.save_dir):
+            os.mkdir(self.save_dir)
         print('model saved: ' + filename + ' (' + str(max_reward) + ')')
         torch.save(self.model, os.path.join(self.save_dir, filename))
 
