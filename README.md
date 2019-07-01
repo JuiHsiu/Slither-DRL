@@ -79,3 +79,23 @@ python main.py --train_[pg|dqn|ac|a2c] --do_render
 python main.py --test_[pg|dqn|ac|a2c] --video_dir [path_to_save_video]
 ```
 
+## Advanced arguments
+1. Number of Environment
+
+	You can create more than one environment at the same time:
+```
+	python main.py --train_[pg|dqn|ac|a2c] --remotes [#_of_env]
+```
+	However, you need to modify the codes to perform batch learning.
+
+2. Action Space
+
+	We make 12 different positions of the mouse as the action space of our agent. If you want the agent to have the ability to accumulate, set the action_space = 24.
+```
+	python main.py --train_[pg|dqn|ac|a2c] --action_space [12|24]
+```
+
+## Demo :
+Our best model is A2C and you can see the pre-trained agent playing game as following:
+
+![](demo/a2c.gif)
