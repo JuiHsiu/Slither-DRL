@@ -4,7 +4,7 @@ In this repository, we implement some well known deep reinforcement learning (DR
 - Policy Gradient (PG)
 - Deep-Q Network (DQN)
 - Actor-Critic (AC)
-- Advantage Actor-Criitc (A2C)
+- Advantage Actor-Critc (A2C)
 
 ## Installation Instructions :
 - Install [docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) for ubuntu 16.04 **MAKE SURE TO DO STEP 2 AS WELL**
